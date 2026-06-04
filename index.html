@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiến Thức Tổng Hợp - Kubernetes Roadmap</title>
+    <style>
+        :root {
+            --bg-header: #141916;
+            --bg-sidebar: #f8f9fa;
+            --bg-content: #fdfdfd;
+            --text-main: #2b303a;
+            --text-muted: #6c757d;
+            --accent-color: #0d6efd;
+            --border-color: #e9ecef;
+            --sidebar-width: 350px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--bg-header);
+            color: #ffffff;
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #2ecc71;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 56px;
+        }
+
+        .logo {
+            font-size: 19px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .logo span {
+            color: #2ecc71;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 56px;
+            flex: 1;
+        }
+
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid #e5e5e5;
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 24px 12px;
+        }
+
+        .topic-header {
+            padding: 0 8px 20px 8px;
+        }
+
+        .topic-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .topic-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .menu-list {
+            list-style: none;
+        }
+
+        .menu-group {
+            margin-bottom: 4px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            border-radius: 6px;
+        }
+
+        .group-header:hover {
+            background-color: #e9ecef;
+            color: #000;
+        }
+
+        .menu-group.expanded .group-header {
+            background-color: #f1f3f5;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .arrow-icon {
+            font-size: 10px;
+            color: #adb5bd;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-group.expanded .arrow-icon {
+            transform: rotate(90deg);
+        }
+
+        .sub-menu {
+            list-style: none;
+            display: none;
+            padding: 2px 0 6px 0;
+            background-color: #f1f3f5;
+        }
+
+        .menu-group.expanded .sub-menu {
+            display: block;
+        }
+
+        .sub-item-container {
+            margin-bottom: 2px;
+        }
+
+        .sub-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 14px 8px 20px;
+            font-size: 13.5px;
+            color: #495057;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sub-link:hover {
+            color: var(--accent-color);
+        }
+
+        .sub-link.active-sub {
+            color: var(--accent-color);
+        }
+
+        .sub-link::before {
+            content: "•";
+            margin-right: 8px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .nested-sub-menu {
+            list-style: none;
+            padding-left: 32px;
+            margin-bottom: 4px;
+        }
+
+        .child-link {
+            display: block;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            color: #6c757d;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-left: 2px solid #e9ecef;
+        }
+
+        .child-link:hover {
+            color: var(--accent-color);
+            border-left-color: var(--accent-color);
+            background-color: rgba(13, 110, 253, 0.04);
+        }
+
+        .child-link.active-child {
+            color: var(--accent-color);
+            border-left-color: var(--accent-color);
+            background-color: #e7f1ff;
+            font-weight: 600;
+        }
+
+        .menu-group.active-group {
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 6px 6px 0;
+        }
+
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px 50px;
+            background-color: var(--bg-content);
+            min-height: calc(100vh - 56px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-body {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .block-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 25px;
+        }
+
+        .block-title {
+            font-size: 24px;
+            color: #111111;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 24px 0 12px 0;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 6px;
+        }
+
+        .theory-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+        }
+
+        .theory-box.advanced {
+            border-left-color: #2ecc71;
+            background-color: #fafffa;
+        }
+
+        .theory-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .theory-desc {
+            font-size: 14.5px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .k8s-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px 0;
+            font-size: 14px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .k8s-table th, .k8s-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .k8s-table th {
+            background-color: #f1f3f5;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .k8s-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            max-width: 900px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #495057;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .page-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #c0c0c0;
+            color: #000;
+        }
+
+        .page-btn.disabled {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .roadmap-footer {
+            margin-top: 40px;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 950px) {
+            .container { flex-direction: column; }
+            aside { width: 100%; position: relative; top: 0; bottom: auto; height: auto; padding: 15px; }
+            main { margin-left: 0; padding: 25px 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Kiến Thức <span>Tổng Hợp</span></div>
+        <div class="updated-date">Cập nhật: Lộ trình tương tác chuẩn</div>
+    </header>
+
+    <div class="container">
+        <aside>
+            <div class="topic-header">
+                <div class="topic-title">Kubernetes Roadmap</div>
+                <div class="topic-subtitle">Kiến trúc cây thư mục phân tầng dữ liệu thực tế</div>
+            </div>
+            
+            <ul class="menu-list">
+                <li class="menu-group expanded active-group" data-block="1">
+                    <div class="group-header">
+                        <span>⬛ Khối 1: Container & K8s Basics</span>
+                        <span class="arrow-icon">▶</span>
+                    </div>
+                    
+                    <ul class="sub-menu" style="display: block;">
+                        <li class="sub-item-container">
+                            <a class="sub-link" data-target="khoi1_1">1. Introduction</a>
+                            <ul class="nested-sub-menu">
+                                <li><a class="child-link active-child" data-target="khoi1_1_1">1.1 Overview of Kubernetes</a></li>
+                                <li><a class="child-link" data-target="khoi1_1_2">1.2 Why use Kubernetes</a></li>
+                                <li><a class="child-link" data-target="khoi1_1_3">1.3 Key Concepts & Terminologies</a></li>
+                                <li><a class="child-link" data-target="khoi1_1_4">1.4 Kubernetes Alternatives</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu-group" data-block="2"><div class="group-header"><span>🟧 Khối 2: Apps & Controllers</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi2">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="3"><div class="group-header"><span>🟨 Khối 3: Services & Networking</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi3">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="4"><div class="group-header"><span>🟩 Khối 4: Storage & Volumes</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi4">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="5"><div class="group-header"><span>🟦 Khối 5: Config & Security</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi5">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="6"><div class="group-header"><span>🟪 Khối 6: Resource & Scheduling</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi6">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="7"><div class="group-header"><span>🟫 Khối 7: Autoscaling & Metrics</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi7">Xem nội dung đầy đủ</a></li></ul></li>
+                <li class="menu-group" data-block="8"><div class="group-header"><span>⬛ Khối 8: CI/CD, GitOps & Ops</span><span class="arrow-icon">▶</span></div><ul class="sub-menu"><li><a class="sub-link" data-target="khoi8">Xem nội dung đầy đủ</a></li></ul></li>
+            </ul>
+        </aside>
+
+        <main>
+            <div class="content-body">
+                
+                <section id="khoi1_1_1" class="content-section active">
+                    <div class="block-header">
+                        <div class="block-title">1.1 Overview of Kubernetes (Tổng quan về Kubernetes)</div>
+                    </div>
+                    <div class="theory-box">
+                        <div class="theory-title">💡 Kubernetes là gì?</div>
+                        <div class="theory-desc">
+                            <strong>Kubernetes</strong> (thường được viết tắt là <strong>K8s</strong> – vì có 8 chữ cái giữa chữ 'K' và chữ 's') là một nền tảng mã nguồn mở, có khả năng mở rộng, dùng để tự động hóa việc đóng gói (deployment), mở rộng (scaling) và quản lý các ứng dụng dưới dạng container[cite: 200]. Nền tảng này ban đầu được thiết kế bởi Google dựa trên kinh nghiệm vận hành hệ thống "Borg" và sau đó được hiến tặng cho Cloud Native Computing Foundation (CNCF) vào năm 2014[cite: 201].
+                        </div>
+                    </div>
+                </section>
+
+                <section id="khoi1_1_2" class="content-section">
+                    <div class="block-header">
+                        <div class="block-title">1.2 Why use Kubernetes? (Tại sao nên sử dụng Kubernetes?)</div>
+                    </div>
+                    <div class="theory-box">
+                        <div class="theory-title">🚀 Giải quyết bài toán vận hành hệ thống lớn</div>
+                        <div class="theory-desc">
+                            Trước khi có K8s, việc quản lý hàng trăm container chạy rải rác trên nhiều máy chủ vật lý là một cơn ác mộng đối với DevOps[cite: 214]. Kubernetes ra đời để giải quyết các thách thức lớn bằng các tính năng cốt lõi sau[cite: 215]:
+                        </div>
+                    </div>
+
+                    <table class="k8s-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%">Tính năng</th>
+                                <th style="width: 45%">Mô tả chi tiết</th>
+                                <th style="width: 30%">Lợi ích mang lại</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Service Discovery & Load Balancing</strong></td>
+                                <td>K8s có thể expose một container bằng cách sử dụng DNS hoặc địa chỉ IP riêng. Nếu lượng truy cập đến một container cao, K8s có thể cân bằng tải (Load Balancing) để phân phối lưu lượng mạng[cite: 216].</td>
+                                <td>Ứng dụng không bị quá tải; người dùng bên ngoài luôn kết nối được đến dịch vụ ổn định[cite: 216].</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Storage Orchestration</strong></td>
+                                <td>Cho phép tự động gắn kết các hệ thống lưu trữ (Storage Systems) do bạn chọn, như local storages, các nhà cung cấp public cloud (AWS, GCP, Azure), hoặc network storage (NFS)[cite: 216].</td>
+                                <td>Quản lý dữ liệu bền vững (Persistent Data) dễ dàng cho các ứng dụng có trạng thái (Stateful)[cite: 216].</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Automated Rollouts & Rollbacks</strong></td>
+                                <td>Bạn có thể mô tả trạng thái mong muốn cho các container được triển khai. K8s có thể thay đổi trạng thái thực tế sang trạng thái mong muốn với tốc độ được kiểm soát[cite: 216].</td>
+                                <td>Cập nhật phiên bản ứng dụng mới mượt mà, không gây gián đoạn (Zero-downtime) và dễ dàng quay về phiên bản cũ nếu có lỗi[cite: 216].</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Automatic Bin Packing</strong></td>
+                                <td>Bạn cung cấp cho K8s một cụm các node và chỉ rõ mỗi container cần bao nhiêu CPU/RAM. K8s sẽ tự động sắp xếp các container vào các node để tối ưu hóa việc sử dụng tài nguyên[cite: 216].</td>
+                                <td>Tiết kiệm chi phí phần cứng và tài nguyên đám mây tối đa[cite: 216].</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Self-healing (Tự sửa chữa)</strong></td>
+                                <td>K8s tự động khởi động lại các container bị lỗi, thay thế container, hủy các container không phản hồi kiểm tra sức khỏe (health check) và chỉ hiển thị chúng cho người dùng khi đã sẵn sàng[cite: 216].</td>
+                                <td>Hệ thống duy trì tính sẵn sàng cao (High Availability) mà không cần can thiệp thủ công vào ban đêm hay ngày nghỉ[cite: 216].</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Secret & Config Management</strong></td>
+                                <td>Cho phép lưu trữ và quản lý các thông tin nhạy cảm (mật khẩu, OAuth tokens, SSH keys) tách biệt khỏi mã nguồn và cấu hình container[cite: 216].</td>
+                                <td>Tăng cường bảo mật, dễ thay đổi cấu hình mà không cần build lại image[cite: 216].</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="khoi1_1_3" class="content-section">
+                    <div class="block-header">
+                        <div class="block-title">1.3 Key Concepts and Terminologies (Các khái niệm và thuật ngữ chính)</div>
+                    </div>
+                    
+                    <div class="section-subtitle">⚙️ Kiến trúc cơ bản của một Cluster Kubernetes</div>
+                    <div class="theory-box advanced">
+                        <div class="theory-title">a. Control Plane (Master Node) - Bộ não điều phối [cite: 204]</div>
+                        <div class="theory-desc">
+                            • <strong>kube-apiserver:</strong> Cổng giao tiếp chính của Control Plane. Tiếp nhận các yêu cầu RESTful từ người dùng (qua CLI như kubectl hoặc dashboard) và các thành phần khác[cite: 205].<br>
+                            • <strong>etcd:</strong> Cơ sở dữ liệu dạng key-value, nhất quán và có tính sẵn sàng cao, lưu trữ toàn bộ dữ liệu cấu hình và trạng thái của Cluster[cite: 206].<br>
+                            • <strong>kube-scheduler:</strong> Quan sát các Pod mới tạo chưa được gán node và chọn một Node tối ưu nhất dựa trên tài nguyên yêu cầu để chạy Pod đó[cite: 207].<br>
+                            • <strong>kube-controller-manager:</strong> Chạy các tiến trình điều khiển (Controllers) để giám sát và duy trì trạng thái mong muốn của hệ thống (ví dụ: Node Controller, Deployment Controller)[cite: 208].
+                        </div>
+                    </div>
+
+                    <div class="theory-box">
+                        <div class="theory-title">b. Worker Nodes - Hạ tầng thực thi [cite: 209]</div>
+                        <div class="theory-desc">
+                            • <strong>kubelet:</strong> Agent chạy trên mỗi Node, đảm bảo các container được chạy trong một Pod theo đúng mô tả[cite: 210].<br>
+                            • <strong>kube-proxy:</strong> Proxy mạng chạy trên từng node, chịu trách nhiệm duy trì các quy tắc mạng (network rules) để cho phép giao tiếp bên trong hoặc ngoài cụm[cite: 211].<br>
+                            • <strong>Container Runtime:</strong> Phần mềm chịu trách nhiệm chạy các container thực tế (Ví dụ: containerd, CRI-O)[cite: 212].
+                        </div>
+                    </div>
+
+                    <div class="section-subtitle">📦 Các đối tượng Object cốt lõi trong K8s [cite: 217, 218]</div>
+                    <div class="theory-box">
+                        <div class="theory-desc">
+                            • <strong>Pod:</strong> Đối tượng nhỏ nhất và cơ bản nhất[cite: 219]. Đại diện cho một tiến trình đang chạy [cite: 220], có thể chứa một hoặc một nhóm nhiều container chia sẻ chung mạng và tài nguyên lưu trữ[cite: 221].<br>
+                            • <strong>Node:</strong> Một máy vật lý hoặc máy ảo thực thi các Pod, chịu sự quản lý từ Control Plane[cite: 223, 224].<br>
+                            • <strong>Deployment:</strong> Một đối tượng cấp cao dùng để quản lý các Pod một cách khai báo (Declarative)[cite: 225]. Tự động tạo hoặc xóa các Pod để đảm bảo số lượng bản sao (replicas) luôn chính xác[cite: 226, 227].<br>
+                            • <strong>Service:</strong> Lớp trừu tượng định nghĩa ra một tập hợp các Pod và một chính sách để truy cập chúng[cite: 229]. Tạo ra một địa chỉ IP hoặc tên miền cố định giúp giao tiếp ổn định khi Pod liên tục thay đổi IP[cite: 228, 230].<br>
+                            • <strong>Namespace:</strong> Một phân vùng logic ("phòng ảo") giúp phân chia tài nguyên giữa nhiều người dùng, dự án hoặc môi trường (dev, prod) khác nhau nhằm tránh xung đột[cite: 231, 232].
+                        </div>
+                    </div>
+                </section>
+
+                <section id="khoi1_1_4" class="content-section">
+                    <div class="block-header">
+                        <div class="block-title">1.4 Kubernetes Alternatives (Các giải pháp thay thế Kubernetes)</div>
+                    </div>
+                    <div class="theory-box">
+                        <div class="theory-title">⚖️ Cân nhắc các giải pháp điều phối Container khác</div>
+                        <div class="theory-desc">
+                            Mặc dù Kubernetes là "vua" trong việc quản lý container hiện nay, nhưng nó cũng nổi tiếng là phức tạp và tốn tài nguyên cấu hình ban đầu[cite: 234]. Tùy thuộc vào quy mô dự án, bạn có thể cân nhắc các giải pháp thay thế sau[cite: 235]:
+                        </div>
+                    </div>
+
+                    <div class="theory-box">
+                        <div class="theory-title">1. Docker Swarm [cite: 236]</div>
+                        <div class="theory-desc">Là công cụ điều phối container chính chủ do Docker phát triển, tích hợp sẵn vào Docker Engine[cite: 236]. Cực kỳ dễ học, dễ cấu hình và sử dụng [cite: 237], phù hợp cho các dự án vừa và nhỏ, ít kiến trúc microservices phức tạp[cite: 238]. Nhược điểm là thiếu các tính năng nâng cao, tùy biến mạng và lưu trữ phức tạp không bằng K8s[cite: 239].</div>
+                    </div>
+
+                    <div class="theory-box">
+                        <div class="theory-title">2. HashiCorp Nomad [cite: 241]</div>
+                        <div class="theory-desc">Một công cụ lập lịch và điều phối linh hoạt của hãng HashiCorp[cite: 241]. Khác với K8s, Nomad có thể điều phối cả các ứng dụng không đóng gói container (như file thực thi Java, các ứng dụng chạy trực tiếp trên Windows/Linux)[cite: 242]. Kiến trúc đơn giản, nhẹ và dễ mở rộng[cite: 243]. Nhược điểm là hệ sinh thái nhỏ hơn và ít công cụ bổ trợ hơn K8s[cite: 244].</div>
+                    </div>
+
+                    <div class="theory-box">
+                        <div class="theory-title">3. Apache Mesos / Marathon [cite: 245]</div>
+                        <div class="theory-desc">Một hệ thống quản lý cụm phân tán mã nguồn mở, hoạt động như một "hệ điều hành cho trung tâm dữ liệu"[cite: 245]. Khả năng mở rộng cực lớn, quản lý tốt cả các tác vụ dữ liệu lớn (Big Data) như Hadoop, Spark bên cạnh container[cite: 246]. Nhược điểm là độ phức tạp cài đặt, vận hành rất cao và xu hướng hiện tại đang dần chuyển dịch sang K8s[cite: 247].</div>
+                    </div>
+
+                    <div class="theory-box advanced">
+                        <div class="theory-title">4. Các giải pháp Managed / Serverless Container (Lựa chọn thay thế trên Cloud) [cite: 248]</div>
+                        <div class="theory-desc">
+                            Nếu không muốn tự quản lý hạ tầng phần cứng Control Plane phức tạp của K8s, bạn có thể chọn các dịch vụ tinh gọn từ các nhà cung cấp đám mây[cite: 248]:<br>
+                            • <strong>AWS ECS (Elastic Container Service):</strong> Công cụ quản lý container độc quyền của AWS, tích hợp sâu vào hệ sinh thái AWS và đơn giản hơn K8s nhiều[cite: 249].<br>
+                            • <strong>AWS Fargate / Google Cloud Run:</strong> Mô hình Serverless Container[cite: 250]. Bạn chỉ cần đưa file Image container lên, hệ thống sẽ tự chạy và tự scale mà không cần quản trị Node hay Cluster vật lý[cite: 251].
+                        </div>
+                    </div>
+                </section>
+
+                <section id="khoi2" class="content-section"><div class="block-header"><div class="block-title">Khối 2: RUNNING APPLICATIONS & CONTROLLERS</div></div></section>
+                <section id="khoi3" class="content-section"><div class="block-header"><div class="block-title">Khối 3: SERVICES & NETWORKING</div></div></section>
+                <section id="khoi4" class="content-section"><div class="block-header"><div class="block-title">Khối 4: STORAGE & VOLUMES</div></div></section>
+                <section id="khoi5" class="content-section"><div class="block-header"><div class="block-title">Khối 5: CONFIGURATION & SECURITY</div></div></section>
+                <section id="khoi6" class="content-section"><div class="block-header"><div class="block-title">Khối 6: RESOURCE MANAGEMENT & SCHEDULING</div></div></section>
+                <section id="khoi7" class="content-section"><div class="block-header"><div class="block-title">Khối 7: AUTOSCALING & OBSERVABILITY</div></div></section>
+                <section id="khoi8" class="content-section"><div class="block-header"><div class="block-title">Khối 8: CI/CD, GITOPS & CLUSTER OPERATIONS</div></div></section>
+
+            </div>
+
+            <div class="pagination-container">
+                <button class="page-btn" id="btn-prev">← Mục trước</button>
+                <button class="page-btn" id="btn-next">Mục sau →</button>
+            </div>
+
+            <div class="roadmap-footer">
+                Học theo Lộ trình chuẩn tương tác tại <a href="https://roadmap.sh" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">roadmap.sh</a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const pageOrder = [
+            "khoi1_1_1", "khoi1_1_2", "khoi1_1_3", "khoi1_1_4",
+            "khoi2", "khoi3", "khoi4", "khoi5", "khoi6", "khoi7", "khoi8"
+        ];
+        
+        const sectionToBlockMap = {
+            "khoi1_1_1": 1, "khoi1_1_2": 1, "khoi1_1_3": 1, "khoi1_1_4": 1,
+            "khoi2": 2, "khoi3": 3, "khoi4": 4, "khoi5": 5, "khoi6": 6, "khoi7": 7, "khoi8": 8
+        };
+
+        let currentPageIndex = 0;
+        const groups = document.querySelectorAll('.menu-group');
+        const childLinks = document.querySelectorAll('.child-link');
+        const sections = document.querySelectorAll('.content-section');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function updateUIByTarget(targetId) {
+            const index = pageOrder.indexOf(targetId);
+            if (index === -1) return;
+            
+            currentPageIndex = index;
+            const activeBlockNum = sectionToBlockMap[targetId];
+
+            groups.forEach(group => {
+                const groupBlock = parseInt(group.getAttribute('data-block'));
+                const subMenu = group.querySelector('.sub-menu');
+                
+                if (groupBlock === activeBlockNum) {
+                    group.classList.add('expanded', 'active-group');
+                    if (subMenu) subMenu.style.display = 'block';
+                } else {
+                    group.classList.remove('expanded', 'active-group');
+                    if (subMenu && groupBlock === 1) subMenu.style.display = 'none';
+                }
+            });
+
+            childLinks.forEach(link => {
+                if (link.getAttribute('data-target') === targetId) {
+                    link.classList.add('active-child');
+                    const parentSubLink = link.closest('.sub-item-container').querySelector('.sub-link');
+                    document.querySelectorAll('.sub-link').forEach(sl => sl.classList.remove('active-sub'));
+                    if (parentSubLink) parentSubLink.classList.add('active-sub');
+                } else {
+                    link.classList.remove('active-child');
+                }
+            });
+
+            if (!targetId.startsWith("khoi1_")) {
+                document.querySelectorAll('.sub-link').forEach(sl => sl.classList.remove('active-sub'));
+            }
+
+            sections.forEach(section => {
+                if (section.getAttribute('id') === targetId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            if (currentPageIndex === 0) {
+                btnPrev.classList.add('disabled');
+            } else {
+                btnPrev.classList.remove('disabled');
+                const prevTarget = pageOrder[currentPageIndex - 1];
+                const prevElem = document.querySelector(`[data-target="${prevTarget}"]`);
+                btnPrev.textContent = `← ${prevElem ? prevElem.textContent.trim() : "Mục trước"}`;
+            }
+
+            if (currentPageIndex === pageOrder.length - 1) {
+                btnNext.classList.add('disabled');
+            } else {
+                btnNext.classList.remove('disabled');
+                const nextTarget = pageOrder[currentPageIndex + 1];
+                const nextElem = document.querySelector(`[data-target="${nextTarget}"]`);
+                btnNext.textContent = `${nextElem ? nextElem.textContent.trim() : "Mục sau"} →`;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        groups.forEach(group => {
+            const header = group.querySelector('.group-header');
+            header.addEventListener('click', () => {
+                const firstChild = group.querySelector('.child-link');
+                if (firstChild) {
+                    updateUIByTarget(firstChild.getAttribute('data-target'));
+                } else {
+                    const firstSub = group.querySelector('.sub-link');
+                    if (firstSub) updateUIByTarget(firstSub.getAttribute('data-target'));
+                }
+            });
+        });
+
+        childLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateUIByTarget(link.getAttribute('data-target'));
+            });
+        });
+
+        btnPrev.addEventListener('click', () => {
+            if (currentPageIndex > 0) updateUIByTarget(pageOrder[currentPageIndex - 1]);
+        });
+
+        btnNext.addEventListener('click', () => {
+            if (currentPageIndex < pageOrder.length - 1) updateUIByTarget(pageOrder[currentPageIndex - 1 + 2]);
+        });
+
+        updateUIByTarget("khoi1_1_1");
+    </script>
+</body>
+</html>
